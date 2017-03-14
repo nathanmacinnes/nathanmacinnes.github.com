@@ -20,15 +20,17 @@
     sha256(masterPw + siteName).then(function (digest) {
       hash = digest.substr(0, 25);
     });
-    document.addEventListener('click', function (event) {
-      if (event.target.matches(['input[type=password]'])) {
-        event.target.value = hash;
-      }
-    });
+    document.addEventListener('click', setPassword);
     window.localStorage.setItem('site_info', siteName);
     sha256(masterPw + siteName).then(function (digest) {
       hash = digest.substr(0, 25);
     });
+    function setPassword(event) {
+      if (event.target.matches('input[type=password]')) {
+        event.target.value = hash;
+      }
+      document.removeEventListener('click', setPassword);
+    }
   });
   function sha256(str) {
     var buffer = new TextEncoder("utf-8").encode(str);
