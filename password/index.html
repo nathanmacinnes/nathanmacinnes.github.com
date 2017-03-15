@@ -1,0 +1,84 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Password Generator</title>
+    <style>
+label:not([for=result]) {
+  display: inline-block;
+  width: 8rem;
+}
+div {
+  margin: 0.2rem auto;
+}
+form {
+  margin-bottom: 1rem;
+}
+#result {
+  width: 11rem;
+  text-align: center;
+}
+    </style>
+  </head>
+  <body>
+    <form id="passwordGenerator">
+      <div>
+        <label>Site name</label>
+        <input id="site-name">
+      </div>
+      <div>
+        <label>Master password</label>
+        <input id="master-password" type="password">
+      </div>
+      <div>
+        <input type="submit" value="Generate">
+      </div>
+    </form>
+    <div>
+      <label for="result">Password:</label>
+      <input id="result">
+    </div>
+    <p>
+      Add <a href="javascript:!function(){function g(a){var b=new TextEncoder("utf-8").encode(a);return crypto.subtle.digest("SHA-256",b).then(function(a){for(var d,e,f,g,b=[],c=new DataView(a),h=0;h<c.byteLength;h+=4)d=c.getUint32(h),e=d.toString(16),f="00000000",g=(f+e).slice(-f.length),b.push(g);return b.join("")})}var b,c,d,e,f,a=window.localStorage.getItem("site_info")||"";f=window.open(null,null,"menubar=no,location=no,resizable=no,scrollbars=no,status=no,width=400px,height=200px"),f.document.write('<html><head><title>Password Generator</title><style>label{min-width:220px;display:inline-block;}input{width:150px;}</style></head><body><form><label for="a">Site-specific name/info:</label><input id="a"><br><label for="b">Master password:</label><input type="password" id="b"><br><input type="submit" value="Generate"></body></html>'),e=f.document.getElementById("a"),e.value=a,f.document.querySelector("form").addEventListener("submit",function(a){function h(a){a.target.matches("input[type=password]")&&(a.target.value=b),document.removeEventListener("click",h)}a.preventDefault(),c=f.document.getElementById("a").value,d=e.value,f.close(),""!==c&&""!==d&&(g(c+d).then(function(a){b=a.substr(0,25)}),document.addEventListener("click",h),window.localStorage.setItem("site_info",d),g(c+d).then(function(a){b=a.substr(0,25)}))})}();">this link</a> to your bookmarks (drag to bookmarks bar). Click it, enter details, then click a password field on the site.
+    </p>
+    <script>
+(function () {
+	document.getElementById('passwordGenerator').addEventListener('submit', function (e) {
+  	var
+    	master = document.getElementById('master-password').value,
+      siteName = document.getElementById('site-name').value;
+
+  	e.preventDefault();
+
+    if (master === '' || siteName === '') {
+      return;
+    }
+    sha256(master + siteName).then(function (digest) {
+      var hash = digest.substr(0, 25);
+      document.getElementById('result').value = hash;
+    });
+  });
+
+  function sha256(str) {
+    var buffer = new TextEncoder("utf-8").encode(str);
+    return crypto.subtle.digest("SHA-256", buffer).then(function (buffer) {
+      var
+      hexCodes = [],
+          view = new DataView(buffer),
+          value,
+          stringValue,
+          padding,
+          paddedValue;
+      for (var i = 0; i < view.byteLength; i += 4) {
+        value = view.getUint32(i);
+        stringValue = value.toString(16);
+        padding = '00000000';
+        paddedValue = (padding + stringValue).slice(-padding.length);
+        hexCodes.push(paddedValue);
+      }
+      return hexCodes.join("");
+    });
+  }
+}())
+    </script>
+  </body>
+<html>
